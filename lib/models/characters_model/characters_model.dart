@@ -1,6 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:json_annotation/json_annotation.dart';
+
+import '../character_model/character_model.dart';
 part 'characters_model.g.dart';
 
 @JsonSerializable()
@@ -15,7 +17,7 @@ class CharactersModel {
   });
 
   Info? info;
-  List<Result>? results;
+  List<CharacterModel>? results;
 }
 
 @JsonSerializable()
@@ -33,40 +35,6 @@ class Info {
   String? prev;
   factory Info.fromJson(Map<String, dynamic> json) => _$InfoFromJson(json);
   Map<String, dynamic> toJson() => _$InfoToJson(this);
-}
-
-@JsonSerializable()
-class Result {
-  Result({
-    this.id,
-    this.name,
-    this.status,
-    this.species,
-    this.type,
-    this.gender,
-    this.origin,
-    this.location,
-    this.image,
-    this.episode,
-    this.url,
-    this.created,
-  });
-
-  int? id;
-  String? name;
-  String? status;
-  String? species;
-  String? type;
-  String? gender;
-  Location? origin;
-  Location? location;
-  String? image;
-  List<String>? episode;
-  String? url;
-  DateTime? created;
-
-  factory Result.fromJson(Map<String, dynamic> json) => _$ResultFromJson(json);
-  Map<String, dynamic> toJson() => _$ResultToJson(this);
 }
 
 @JsonSerializable()

@@ -7,21 +7,33 @@ class CharacterManager extends ChangeNotifier {
   final RickAndMortyService _service = RickAndMortyService();
 
   CharacterModel? _character;
+  List<CharacterModel> _characterList = [];
+  List<CharacterModel> _charactersForPagination = [];
   CharactersModel? _characters;
 
-  Future getCharacter(int id) async {
+  Future<CharacterModel?> getCharacter(int id) async {
     CharacterModel result = await _service.getById(id);
     _character = result;
     notifyListeners();
+    return _character;
   }
 
-  Future getCharacters() async {
-    CharactersModel result = await _service.get();
+  Future<CharactersModel>? getCharacters({int? page}) async {
+    CharactersModel result = await _service.getCharacters(page ?? 1);
     _characters = result;
+    _characterList.addAll(_characters?.results ?? []);
+    _charactersForPagination.addAll(_characters?.results ?? []);
     notifyListeners();
+    return _characters!; //TODO:nullcheck kalkacak
   }
 
   CharacterModel? get character => _character;
-  set setCharacter(CharacterModel value) => _character = value;
+  set setCharacter(CharacterModel value) {
+    _character = value;
+    notifyListeners();
+  }
+
   CharactersModel? get characters => _characters;
+  List<CharacterModel> get characterList => _characterList;
+  List<CharacterModel> get charactersForPagination => _charactersForPagination;
 }

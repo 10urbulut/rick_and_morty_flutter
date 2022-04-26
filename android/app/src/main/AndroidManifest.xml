@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.rick_and_morty_demo">
+    package="dev.onurbulut.rick_and_morty_demo">
    <application
         android:label="rick_and_morty_demo"
         android:name="${applicationName}"
