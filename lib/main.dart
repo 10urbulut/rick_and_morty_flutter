@@ -6,9 +6,9 @@ import 'package:provider/provider.dart';
 import 'business/character_manager.dart';
 import 'business/episode_manager.dart';
 import 'business/location_manager.dart';
+import 'constants/named_routes/named_route_strings.dart';
 import 'constants/named_routes/named_routes.dart';
 import 'constants/project_theme.dart';
-import 'screens/characters_screen.dart';
 
 void main() {
   HttpOverrides.global = MyHttpOverrides();
@@ -27,8 +27,13 @@ class App extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => EpisodeManager()),
       ],
       child: MaterialApp(
-        home: CharactersScreen(),
-        darkTheme: ThemeData.dark(),
+        // builder: (context, widget) => ResponsiveWrapper.builder(
+        //     ClampingScrollWrapper.builder(context, widget!),
+        //     breakpoints: const [
+        //       ResponsiveBreakpoint.autoScale(450, name: MOBILE),
+        //     ]),
+
+        initialRoute: NamedRouteStrings.CHARACTERS,
         themeMode: ThemeMode.light,
         theme: ProjectTheme.themeData,
         routes: NamedRoutes.routes,

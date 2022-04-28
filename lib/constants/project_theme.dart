@@ -1,9 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProjectTheme {
   static ThemeData get themeData {
     return ThemeData(
+        tooltipTheme: _tooltipTheme,
+        useMaterial3: true,
         splashColor: Colors.amber,
         errorColor: Colors.red,
         primaryColor: Colors.deepOrange,
@@ -36,6 +38,12 @@ class ProjectTheme {
             color: Colors.deepOrange.shade100),
         appBarTheme: _appBarTheme);
   }
+
+  static TooltipThemeData get _tooltipTheme => TooltipThemeData(
+      textStyle: GoogleFonts.comicNeue(
+          color: Colors.white, fontWeight: FontWeight.bold),
+      decoration: BoxDecoration(
+          color: Colors.deepOrange, borderRadius: BorderRadius.circular(5)));
 
   static AppBarTheme get _appBarTheme {
     return AppBarTheme(

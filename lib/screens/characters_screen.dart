@@ -1,6 +1,9 @@
+// ignore_for_file: prefer_final_fields
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:rick_and_morty_demo/constants/enums.dart';
 
 import '../business/character_manager.dart';
 import '../business/episode_manager.dart';
@@ -10,8 +13,30 @@ import '../constants/title_strings.dart';
 import '../models/character_model/character_model.dart';
 import '../models/characters_model/characters_model.dart';
 
-class CharactersScreen extends StatelessWidget {
-  CharactersScreen({Key? key}) : super(key: key);
+class CharactersScreen extends StatefulWidget {
+  const CharactersScreen({Key? key}) : super(key: key);
+
+  @override
+  State<CharactersScreen> createState() => _CharactersScreenState();
+}
+
+class _CharactersScreenState extends State<CharactersScreen> {
+  ScrollController? _scroll;
+  int page = 2;
+
+  ValueNotifier<PageStatus> pageStatus =
+      ValueNotifier<PageStatus>(PageStatus.idle);
+
+  @override
+  void initState() {
+    _createScroll();
+    super.initState();
+  }
+
+  void _createScroll() {
+    _scroll = ScrollController();
+    _scroll?.addListener(loadMoreCharacter);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +44,14 @@ class CharactersScreen extends StatelessWidget {
       appBar: _appBar(),
       body: _body(context),
       floatingActionButton: _elevatedEpisodesButton(context),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartTop,
     );
   }
 
   ElevatedButton _elevatedEpisodesButton(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () async {
+        context.read<EpisodeManager>().clearEpisodes();
         await context.read<EpisodeManager>().getEpisode();
         Navigator.pushNamed(context, NamedRouteStrings.EPISODES);
       },
@@ -46,9 +72,12 @@ class CharactersScreen extends StatelessWidget {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              return const Center(
-                  child:
-                      SizedBox(width: 200, child: LinearProgressIndicator()));
+              return Center(
+                  child: SizedBox(
+                      width: 200,
+                      child: Transform.rotate(
+                          angle: -0.1,
+                          child: const LinearProgressIndicator())));
 
             case ConnectionState.done:
               return _consumerForCard();
@@ -68,16 +97,20 @@ class CharactersScreen extends StatelessWidget {
   _consumerForCard() {
     return Consumer<CharacterManager>(
       builder: (context, value, child) =>
-          _listViewBuilderForConsumer(value.characters?.results ?? []),
+          _listViewBuilderForConsumer(value.charactersForPagination, context),
     );
   }
 
-  _listViewBuilderForConsumer(List<CharacterModel> value) {
+  _listViewBuilderForConsumer(
+      List<CharacterModel> value, BuildContext context) {
     return ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 15),
+        controller: _scroll,
+        padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width / 100,
+            vertical: MediaQuery.of(context).size.height / 28),
         itemCount: value.length,
         itemBuilder: (context, index) {
-          var data = value[index];
+          CharacterModel data = value[index];
           return Transform.rotate(
             angle: -0.1,
             child: GestureDetector(
@@ -91,20 +124,44 @@ class CharactersScreen extends StatelessWidget {
         });
   }
 
-  Card _cardWidget(CharacterModel? data, BuildContext context) {
-    return Card(
-      elevation: 30,
-      child: Stack(
-        alignment: AlignmentDirectional.centerEnd,
-        children: [
-          const Icon(Icons.arrow_right_rounded, color: Colors.grey, size: 45),
-          Row(
-            children: [
-              _cardFirstColumn(data, context),
-              _cardSecondColumn(data, context),
-            ],
-          ),
-        ],
+  Widget _cardWidget(CharacterModel? data, BuildContext context) {
+    return Tooltip(
+      message: 'Tap for Detail',
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        decoration: BoxDecoration(
+            backgroundBlendMode: BlendMode.colorBurn,
+            borderRadius: BorderRadius.circular(50),
+            color: Colors.deepOrange.shade50,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.deepOrange.shade200,
+                offset: const Offset(4, 4),
+                blurRadius: 1,
+                spreadRadius: 1,
+              ),
+              BoxShadow(
+                color: Colors.deepOrange.shade100,
+                offset: const Offset(-4, -4),
+                blurRadius: 11,
+                spreadRadius: 1,
+              ),
+            ]),
+        margin: EdgeInsets.symmetric(
+            vertical: MediaQuery.of(context).size.height / 50,
+            horizontal: MediaQuery.of(context).size.width / 50),
+        child: Stack(
+          alignment: AlignmentDirectional.centerEnd,
+          children: [
+            const Icon(Icons.arrow_right_rounded, color: Colors.grey, size: 45),
+            Row(
+              children: [
+                _cardFirstColumn(data, context),
+                _cardSecondColumn(data, context),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -209,5 +266,17 @@ class CharactersScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> loadMoreCharacter() async {
+    if (_scroll!.position.pixels >= _scroll!.position.maxScrollExtent &&
+        pageStatus.value != PageStatus.newPageLoading &&
+        page <= context.read<CharacterManager>().characters!.info!.pages!) {
+      print(page);
+      pageStatus.value = PageStatus.newPageLoading;
+      await context.read<CharacterManager>().getCharacters(page: (page++));
+      pageStatus.value = PageStatus.newPageLoaded;
+      // _scroll?.jumpTo(_scroll!.position.maxScrollExtent-5);
+    } else {}
   }
 }

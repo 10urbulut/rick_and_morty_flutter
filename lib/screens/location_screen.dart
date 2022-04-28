@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:rick_and_morty_demo/screens/widgets/card_widget.dart';
 
 import '../business/location_manager.dart';
 import '../constants/title_strings.dart';
@@ -19,8 +20,7 @@ class LocationScreen extends StatelessWidget {
       body: Consumer<LocationManager>(
         builder: (context, value, child) {
           var data = value.location;
-          return Card(
-            margin: const EdgeInsets.all(10),
+          return CardWidget(
             child: ListView(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 20),

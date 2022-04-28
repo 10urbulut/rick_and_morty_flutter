@@ -26,7 +26,6 @@ class RickAndMortyService {
   }
 
   Future<CharactersModel> getCharacters(int page) async {
-    
     Response response =
         await dio.get(Environment.baseUri + "character/?page=$page");
 
@@ -59,8 +58,6 @@ class RickAndMortyService {
   }
 
   Future<List<EpisodeModel>> getEpisodeWithId(String id) async {
-    EpisodeResponseModel responseModel;
-
     Response response = await dio.get(Environment.baseUri + "episode/$id");
 
     if (response.statusCode == HttpStatus.ok) {
@@ -70,7 +67,40 @@ class RickAndMortyService {
       }
       return episodes;
     } else {
-      throw Exception("Bir sorun Oluştu");
+      return [];
+    }
+  }
+
+  Future<List<EpisodeModel>> getEpisodeWithFilter(String episodeName) async {
+    Response response =
+        await dio.get(Environment.baseUri + "episode/?name=$episodeName");
+
+    if (response.statusCode == HttpStatus.ok) {
+      List<EpisodeModel> episodes = [];
+
+      for (var item in EpisodeResponseModel.fromJson(response.data).results!) {
+        episodes.add(item);
+      }
+      return episodes;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<CharacterModel>> getCharacterWithFilter(
+      String characterName) async {
+    Response response =
+        await dio.get(Environment.baseUri + "character/?name=$characterName");
+
+    if (response.statusCode == HttpStatus.ok) {
+      List<CharacterModel> characters = [];
+
+      for (var item in CharactersModel.fromJson(response.data).results!) {
+        characters.add(item);
+      }
+      return characters;
+    } else {
+      return [];
     }
   }
 }

@@ -6,8 +6,9 @@ import 'package:rick_and_morty_demo/business/location_manager.dart';
 import 'package:rick_and_morty_demo/constants/named_routes/named_route_strings.dart';
 import 'package:rick_and_morty_demo/constants/title_strings.dart';
 import 'package:rick_and_morty_demo/models/character_model/character_model.dart';
+import 'package:rick_and_morty_demo/screens/widgets/card_widget.dart';
 
-import '-widgets/unknown_text_widget.dart';
+import 'widgets/unknown_text_widget.dart';
 import '../business/character_manager.dart';
 import '../constants/constant_strings.dart';
 
@@ -54,9 +55,7 @@ class CharacterScreen extends StatelessWidget {
     return Consumer<CharacterManager>(
       builder: (context, value, child) {
         character = value.character;
-        return Card(
-          margin: const EdgeInsets.all(8),
-          elevation: 25,
+        return CardWidget(
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: Column(children: [

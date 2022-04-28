@@ -4,12 +4,13 @@ import 'package:rick_and_morty_demo/services/rick_and_morty_service.dart';
 
 class EpisodeManager extends ChangeNotifier {
   final RickAndMortyService _service = RickAndMortyService();
-
+  bool _isLoading = false;
   List<EpisodeModel> _episodes = [];
+  EpisodeResponseModel? _episodeResponse;
 
   Future getEpisode({int? page}) async {
-    EpisodeResponseModel responseModel = await _service.getEpisode(page ?? 1);
-    _episodes = responseModel.results ?? [];
+    _episodeResponse = await _service.getEpisode(page ?? 1);
+    _episodes += _episodeResponse?.results ?? [];
     notifyListeners();
   }
 
@@ -19,5 +20,25 @@ class EpisodeManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future getEpisodeWithFilter(String episodeName) async {
+    setIsLoading;
+    List<EpisodeModel> responseModel = await _service
+        .getEpisodeWithFilter(episodeName)
+        .whenComplete(() => setIsLoading);
+    _episodes = responseModel;
+    notifyListeners();
+  }
+
+  void clearEpisodes() {
+    _episodes.clear();
+    notifyListeners();
+  }
+
   List<EpisodeModel> get episodes => _episodes;
+  EpisodeResponseModel? get episodeResponse => _episodeResponse;
+  bool get isLoading => _isLoading;
+  get setIsLoading {
+    _isLoading = !_isLoading;
+    notifyListeners();
+  }
 }
