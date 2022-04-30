@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../constants/title_strings.dart';
 import '../../constants/tool_tip_strings.dart';
 
 class SearchFieldTextField extends StatelessWidget {
   SearchFieldTextField({
     Key? key,
     this.onChanged,
-    required this.isLoading,this.startSearchOnTap
+    required this.isLoading,
+    required this.hintText,
+    this.startSearchOnTap,
   }) : super(key: key);
+  String hintText;
 
-  void Function(String)? onChanged;
+  void Function(String value)? onChanged;
   bool isLoading;
   void Function()? startSearchOnTap;
   @override
@@ -21,7 +23,7 @@ class SearchFieldTextField extends StatelessWidget {
         width: 250,
         height: 35,
         child: TextField(
-          onChanged: (value) => onChanged,
+          onChanged: onChanged,
           cursorColor: Theme.of(context).appBarTheme.backgroundColor,
           toolbarOptions: const ToolbarOptions(paste: true),
           decoration: _searchFieldDecoration(context),
@@ -32,8 +34,9 @@ class SearchFieldTextField extends StatelessWidget {
 
   InputDecoration _searchFieldDecoration(BuildContext context) {
     return InputDecoration(
-      label:
-          Text(TitleStrings.SEARCH_BY_EPISODE_NAME, style: GoogleFonts.combo()),
+      contentPadding: const EdgeInsets.only(bottom: 8, top: 8, left: 14),
+      hintStyle: GoogleFonts.combo(),
+      hintText: hintText,
       labelStyle: const TextStyle(color: Colors.black),
       suffixIcon: GestureDetector(
         onTap: startSearchOnTap,

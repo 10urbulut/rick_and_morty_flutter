@@ -15,7 +15,7 @@ import '../constants/constant_strings.dart';
 class CharacterScreen extends StatelessWidget {
   CharacterScreen({Key? key}) : super(key: key);
 
-  final TextStyle _style = GoogleFonts.aBeeZee(fontSize: 18);
+  final TextStyle _style = GoogleFonts.aBeeZee(fontSize: 20);
   CharacterModel? character;
 
   @override
@@ -31,6 +31,8 @@ class CharacterScreen extends StatelessWidget {
   ElevatedButton _elevatedEpisodesButton(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () async {
+        context.read<EpisodeManager>().setSearchVisibleFalse;
+
         String _epeisodeList = "";
         if (character?.episode != null) {
           for (var item in character!.episode!) {
@@ -56,17 +58,33 @@ class CharacterScreen extends StatelessWidget {
       builder: (context, value, child) {
         character = value.character;
         return CardWidget(
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(children: [
-              const Divider(color: Colors.transparent, height: 6),
-              _characterNameTextWithSizedBox(context),
-              character == null
-                  ? const Text("No image")
-                  : _imageField(character!),
-              const Divider(color: Colors.transparent),
-              _informationsField(context),
-            ]),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: Colors.deepOrange.shade100,
+                border: Border.all(color: Colors.transparent),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.deepOrange.shade400,
+                      spreadRadius: 4,
+                      offset: const Offset(4, 4)),
+                  BoxShadow(
+                      color: Colors.deepOrange.shade400,
+                      spreadRadius: 4,
+                      offset: const Offset(-4, -4))
+                ]),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(children: [
+                const Divider(color: Colors.transparent, height: 6),
+                _characterNameTextWithSizedBox(context),
+                character == null
+                    ? const Text("No image")
+                    : _imageField(character!),
+                const Divider(color: Colors.transparent),
+                _informationsField(context),
+              ]),
+            ),
           ),
         );
       },

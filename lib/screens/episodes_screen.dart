@@ -5,9 +5,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_demo/constants/tool_tip_strings.dart';
 import 'package:rick_and_morty_demo/screens/widgets/search_close_floating_action_button%20copy.dart';
+import 'package:rick_and_morty_demo/screens/widgets/search_field_text_field.dart';
 import 'package:rick_and_morty_demo/screens/widgets/search_open_floating_action_button.dart';
 
 import '../business/episode_manager.dart';
+import '../constants/constant_strings.dart';
 import '../constants/enums.dart';
 import '../constants/title_strings.dart';
 import '../models/episode_model/episode/episode_model.dart';
@@ -26,7 +28,6 @@ class _EpisodesScreenState extends State<EpisodesScreen> {
   String _searchValue = "";
   int page = 2;
   ScrollController? _scroll;
-  ValueNotifier<bool> _searchVisible = ValueNotifier<bool>(true);
 
   @override
   void initState() {
@@ -43,22 +44,31 @@ class _EpisodesScreenState extends State<EpisodesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AnimatedCrossFade(
-            firstChild: _searcField,
-            secondChild: _appBarTitle,
-            crossFadeState: !_searchVisible.value
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            duration: const Duration(milliseconds: 500)),
+        title: Consumer<EpisodeManager>(
+          builder: (context, value, child) => AnimatedCrossFade(
+              firstChild: SearchFieldTextField(
+                  startSearchOnTap: () =>
+                      value.getEpisodeWithFilter(_searchValue),
+                  isLoading: value.isLoading,
+                  hintText: TitleStrings.SEARCH_BY_EPISODE_NAME,
+                  onChanged: (value) => _searchValue = value),
+              secondChild: _appBarTitle,
+              crossFadeState: value.searchVisible
+                  ? CrossFadeState.showFirst
+                  : CrossFadeState.showSecond,
+              duration: const Duration(milliseconds: searchFieldDuration)),
+        ),
       ),
       body: _body,
-      floatingActionButton: AnimatedCrossFade(
-          firstChild: _searchOpenFloatinActionButton(context),
-          secondChild: _searchCloseFloatinActionButton(context),
-          crossFadeState: _searchVisible.value
-              ? CrossFadeState.showFirst
-              : CrossFadeState.showSecond,
-          duration: const Duration(milliseconds: 500)),
+      floatingActionButton: Consumer<EpisodeManager>(
+        builder: (context, value, child) => AnimatedCrossFade(
+            firstChild: _searchOpenFloatinActionButton(context),
+            secondChild: _searchCloseFloatinActionButton(context),
+            crossFadeState: !value.searchVisible
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            duration: const Duration(milliseconds: searchFieldDuration)),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
@@ -69,7 +79,7 @@ class _EpisodesScreenState extends State<EpisodesScreen> {
       BuildContext context) {
     return SearchOpenFloatingActionButton(
       onPressed: () {
-        setState(() => _searchVisible.value = !_searchVisible.value);
+        context.read<EpisodeManager>().setSearchVisible;
       },
     );
   }
@@ -78,7 +88,7 @@ class _EpisodesScreenState extends State<EpisodesScreen> {
       BuildContext context) {
     return SearchCloseFloatingActionButton(onPressed: () async {
       context.read<EpisodeManager>().getEpisodeWithFilter("");
-      setState(() => _searchVisible.value = !_searchVisible.value);
+      context.read<EpisodeManager>().setSearchVisible;
     });
   }
 
@@ -193,59 +203,6 @@ class _EpisodesScreenState extends State<EpisodesScreen> {
     } else {}
   }
 
-  Widget get _searcField {
-    return Card(
-      child: SizedBox(
-        width: 250,
-        height: 35,
-        child: TextField(
-          onChanged: (value) => _searchValue = value,
-          cursorColor: Theme.of(context).appBarTheme.backgroundColor,
-          toolbarOptions: const ToolbarOptions(paste: true),
-          decoration: _searchFieldDecoration(),
-        ),
-      ),
-    );
-  }
-
-  InputDecoration _searchFieldDecoration() {
-    return InputDecoration(
-      label:
-          Text(TitleStrings.SEARCH_BY_EPISODE_NAME, style: GoogleFonts.combo()),
-      labelStyle: const TextStyle(color: Colors.black),
-      suffixIcon: GestureDetector(
-        onTap: () async {
-          await context
-              .read<EpisodeManager>()
-              .getEpisodeWithFilter(_searchValue);
-        },
-        child: Tooltip(
-          message: ToolTipStrings.START_SEARCH,
-          child: context.watch<EpisodeManager>().isLoading
-              ? Icon(Icons.circle_outlined, color: Colors.amber.shade900)
-              : const Icon(Icons.search, color: Colors.black),
-        ),
-      ),
-      focusedBorder: const OutlineInputBorder(
-        borderSide: BorderSide(style: BorderStyle.none),
-      ),
-      enabledBorder: _searchFieldEnabledBorder,
-      border: _searchFieldBorder,
-    );
-  }
-
-  OutlineInputBorder get _searchFieldBorder {
-    return const OutlineInputBorder(
-      borderSide: BorderSide(style: BorderStyle.none),
-      borderRadius: BorderRadius.only(
-        bottomRight: Radius.circular(20),
-        topRight: Radius.circular(20),
-      ),
-    );
-  }
-
-  OutlineInputBorder get _searchFieldEnabledBorder =>
-      const OutlineInputBorder(borderSide: BorderSide.none);
   TextStyle get _titleStyle => GoogleFonts.bubblegumSans(
         fontSize: 24,
         letterSpacing: 2,

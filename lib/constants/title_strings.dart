@@ -6,4 +6,5 @@ class TitleStrings {
   static const String EPISODES = "Episodes";
   static const String LOCATION = "Location";
   static const String SEARCH_BY_EPISODE_NAME = 'Search by episode name...';
+  static const String SEARCH_BY_CHARACTER_NAME = "Search by character name...";
 }

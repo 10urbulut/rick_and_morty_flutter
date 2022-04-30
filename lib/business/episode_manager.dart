@@ -7,6 +7,7 @@ class EpisodeManager extends ChangeNotifier {
   bool _isLoading = false;
   List<EpisodeModel> _episodes = [];
   EpisodeResponseModel? _episodeResponse;
+  bool _searchVisible = false;
 
   Future getEpisode({int? page}) async {
     _episodeResponse = await _service.getEpisode(page ?? 1);
@@ -40,5 +41,16 @@ class EpisodeManager extends ChangeNotifier {
   get setIsLoading {
     _isLoading = !_isLoading;
     notifyListeners();
+  }
+
+  bool get searchVisible => _searchVisible;
+  bool get setSearchVisible {
+    notifyListeners();
+    return _searchVisible = !_searchVisible;
+  }
+
+  bool get setSearchVisibleFalse {
+    notifyListeners();
+    return _searchVisible = false;
   }
 }

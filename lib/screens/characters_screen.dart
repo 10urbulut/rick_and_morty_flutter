@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_demo/constants/enums.dart';
+import 'package:rick_and_morty_demo/constants/tool_tip_strings.dart';
+import 'package:rick_and_morty_demo/screens/widgets/search_close_floating_action_button%20copy.dart';
+import 'package:rick_and_morty_demo/screens/widgets/search_field_text_field.dart';
+import 'package:rick_and_morty_demo/screens/widgets/search_open_floating_action_button.dart';
 
 import '../business/character_manager.dart';
 import '../business/episode_manager.dart';
@@ -27,6 +31,8 @@ class _CharactersScreenState extends State<CharactersScreen> {
   ValueNotifier<PageStatus> pageStatus =
       ValueNotifier<PageStatus>(PageStatus.idle);
 
+  String _searchValue = "";
+
   @override
   void initState() {
     _createScroll();
@@ -42,26 +48,71 @@ class _CharactersScreenState extends State<CharactersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      body: _body(context),
-      floatingActionButton: _elevatedEpisodesButton(context),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartTop,
+      body: Stack(alignment: AlignmentDirectional.topStart, children: [
+        _body(context),
+        _elevatedEpisodesButton(context),
+      ]),
+      floatingActionButton: Consumer<CharacterManager>(
+        builder: (context, value, child) => AnimatedCrossFade(
+            firstChild: _searchOpenFloatinActionButton(context),
+            secondChild: _searchCloseFloatinActionButton(context),
+            crossFadeState: value.searchVisible
+                ? CrossFadeState.showSecond
+                : CrossFadeState.showFirst,
+            duration: const Duration(milliseconds: searchFieldDuration)),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
-  ElevatedButton _elevatedEpisodesButton(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: () async {
-        context.read<EpisodeManager>().clearEpisodes();
-        await context.read<EpisodeManager>().getEpisode();
-        Navigator.pushNamed(context, NamedRouteStrings.EPISODES);
+  SearchOpenFloatingActionButton _searchOpenFloatinActionButton(
+      BuildContext context) {
+    return SearchOpenFloatingActionButton(
+      onPressed: () {
+        context.read<CharacterManager>().setSearchVisible;
       },
-      icon: const Icon(Icons.turn_right_sharp),
-      label: const Text("All\n" + TitleStrings.EPISODES),
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        elevation: 10,
-        primary: Theme.of(context).appBarTheme.backgroundColor,
-        animationDuration: const Duration(seconds: 2),
+    );
+  }
+
+  SearchCloseFloatingActionButton _searchCloseFloatinActionButton(
+      BuildContext context) {
+    return SearchCloseFloatingActionButton(onPressed: () async {
+      context.read<CharacterManager>().getCharacterWithFilter("");
+      context.read<CharacterManager>().setSearchVisible;
+    });
+  }
+
+  Widget _elevatedEpisodesButton(BuildContext context) {
+    return Consumer<CharacterManager>(
+      builder: (context, value, child) => AnimatedCrossFade(
+        firstChild: Padding(
+          padding: const EdgeInsets.only(left: 6),
+          child: Tooltip(
+            message: ToolTipStrings.TAP_FOR_ALL_EPISODES,
+            child: ElevatedButton.icon(
+              onPressed: () async {
+                context.read<EpisodeManager>().setSearchVisibleFalse;
+                context.read<EpisodeManager>().clearEpisodes();
+                await context.read<EpisodeManager>().getEpisode();
+                Navigator.pushNamed(context, NamedRouteStrings.EPISODES);
+              },
+              icon: const Icon(Icons.turn_right_sharp),
+              label: const Text("All\n" + TitleStrings.EPISODES),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                elevation: 2,
+                primary: Theme.of(context).appBarTheme.backgroundColor,
+                animationDuration: const Duration(seconds: 2),
+              ),
+            ),
+          ),
+        ),
+        duration: const Duration(milliseconds: searchFieldDuration),
+        secondChild: const Divider(color: Colors.transparent),
+        crossFadeState: !value.searchVisible
+            ? CrossFadeState.showFirst
+            : CrossFadeState.showSecond,
       ),
     );
   }
@@ -90,7 +141,20 @@ class _CharactersScreenState extends State<CharactersScreen> {
 
   AppBar _appBar() {
     return AppBar(
-      title: const Text(TitleStrings.CHARACTERS),
+      title: Consumer<CharacterManager>(
+        builder: (context, value, child) => AnimatedCrossFade(
+            firstChild: SearchFieldTextField(
+                startSearchOnTap: () =>
+                    value.getCharacterWithFilter(_searchValue),
+                isLoading: value.isLoading,
+                hintText: TitleStrings.SEARCH_BY_CHARACTER_NAME,
+                onChanged: (value) => _searchValue = value),
+            secondChild: const Text(TitleStrings.CHARACTERS),
+            crossFadeState: value.searchVisible
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            duration: const Duration(milliseconds: searchFieldDuration)),
+      ),
     );
   }
 
@@ -115,6 +179,8 @@ class _CharactersScreenState extends State<CharactersScreen> {
             angle: -0.1,
             child: GestureDetector(
               onTap: () async {
+                context.read<CharacterManager>().setSearchVisibleFalse;
+
                 context.read<CharacterManager>().setCharacter = data;
                 Navigator.pushNamed(context, NamedRouteStrings.CHARACTER);
               },
@@ -126,25 +192,18 @@ class _CharactersScreenState extends State<CharactersScreen> {
 
   Widget _cardWidget(CharacterModel? data, BuildContext context) {
     return Tooltip(
-      message: 'Tap for Detail',
+      message: ToolTipStrings.TAP_FOR_THE_CHARACTER_DETAIL,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
-            backgroundBlendMode: BlendMode.colorBurn,
             borderRadius: BorderRadius.circular(50),
-            color: Colors.deepOrange.shade50,
+            color: Colors.deepOrange.shade200,
             boxShadow: [
               BoxShadow(
-                color: Colors.deepOrange.shade200,
-                offset: const Offset(4, 4),
-                blurRadius: 1,
-                spreadRadius: 1,
-              ),
-              BoxShadow(
-                color: Colors.deepOrange.shade100,
-                offset: const Offset(-4, -4),
-                blurRadius: 11,
-                spreadRadius: 1,
+                color: Colors.deepOrange.shade400,
+                offset: const Offset(0, 0),
+                blurRadius: 0,
+                spreadRadius: 6,
               ),
             ]),
         margin: EdgeInsets.symmetric(

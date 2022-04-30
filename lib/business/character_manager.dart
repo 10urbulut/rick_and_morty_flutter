@@ -13,6 +13,7 @@ class CharacterManager extends ChangeNotifier {
   List<CharacterModel> _charactersForPagination = [];
   CharactersModel? _characters;
   bool _isLoading = false;
+  bool _searchVisible = false;
 
   Future<CharacterModel?> getCharacter(int id) async {
     CharacterModel result = await _service.getById(id);
@@ -49,5 +50,17 @@ class CharacterManager extends ChangeNotifier {
   List<CharacterModel> get characterList => _characterList;
   List<CharacterModel> get charactersForPagination => _charactersForPagination;
   bool get isLoading => _isLoading;
-  get setIsloading => _isLoading = !_isLoading;
+  get setIsloading {
+    notifyListeners();
+    return _isLoading = !_isLoading;
+  }
+
+  bool get searchVisible => _searchVisible;
+  bool get setSearchVisible {
+    notifyListeners();
+    return _searchVisible = !_searchVisible;
+  } bool get setSearchVisibleFalse {
+    notifyListeners();
+    return _searchVisible = false;
+  }
 }
