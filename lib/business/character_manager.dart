@@ -14,6 +14,7 @@ class CharacterManager extends ChangeNotifier {
   CharactersModel? _characters;
   bool _isLoading = false;
   bool _searchVisible = false;
+  bool _imageStatus = false;
 
   Future<CharacterModel?> getCharacter(int id) async {
     CharacterModel result = await _service.getById(id);
@@ -59,8 +60,22 @@ class CharacterManager extends ChangeNotifier {
   bool get setSearchVisible {
     notifyListeners();
     return _searchVisible = !_searchVisible;
-  } bool get setSearchVisibleFalse {
+  }
+
+  bool get setSearchVisibleFalse {
     notifyListeners();
     return _searchVisible = false;
+  }
+
+  bool get imageStatus => _imageStatus;
+
+  bool get setImageStatus {
+    notifyListeners();
+    return _imageStatus = !_imageStatus;
+  }
+
+  bool get setImageStatusFalse {
+    notifyListeners();
+    return _imageStatus = false;
   }
 }
