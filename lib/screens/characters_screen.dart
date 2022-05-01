@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_demo/constants/enums.dart';
 import 'package:rick_and_morty_demo/constants/tool_tip_strings.dart';
+import 'package:rick_and_morty_demo/screens/widgets/container_shadow_widget.dart';
 import 'package:rick_and_morty_demo/screens/widgets/search_close_floating_action_button%20copy.dart';
 import 'package:rick_and_morty_demo/screens/widgets/search_field_text_field.dart';
 import 'package:rick_and_morty_demo/screens/widgets/search_open_floating_action_button.dart';
@@ -174,9 +175,11 @@ class _CharactersScreenState extends State<CharactersScreen> {
       List<CharacterModel> value, BuildContext context) {
     return ListView.builder(
         controller: _scroll,
-        padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width / 35,
-            vertical: MediaQuery.of(context).size.height / 15),
+        padding: EdgeInsets.only(
+            left: MediaQuery.of(context).size.width / 35,
+            right: MediaQuery.of(context).size.width / 35,
+            top: MediaQuery.of(context).size.width / 12.5,
+            bottom: MediaQuery.of(context).size.width / 12.5),
         itemCount: value.length,
         itemBuilder: (context, index) {
           CharacterModel data = value[index];
@@ -197,19 +200,8 @@ class _CharactersScreenState extends State<CharactersScreen> {
 
   Widget _cardWidget(CharacterModel? data, BuildContext context) {
     return Tooltip(
-      message: ToolTipStrings.TAP_FOR_THE_CHARACTER_DETAIL,
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            color: Colors.deepOrange.shade200,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.deepOrange.shade400,
-                offset: const Offset(0, 0),
-                blurRadius: 0,
-                spreadRadius: 6,
-              ),
-            ]),
+      message: ToolTipStrings.TAP_FOR_THE_CHARACTER_DETAILS,
+      child: ContainerShadowWidget(
         margin: EdgeInsets.symmetric(
             vertical: MediaQuery.of(context).size.height / 50),
         child: Stack(
@@ -219,7 +211,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
             Row(
               children: [
                 _cardFirstColumn(data, context),
-                VerticalDivider(),
+                const VerticalDivider(),
                 _cardSecondColumn(data, context),
               ],
             ),

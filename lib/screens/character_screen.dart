@@ -8,6 +8,7 @@ import 'package:rick_and_morty_demo/constants/named_routes/named_route_strings.d
 import 'package:rick_and_morty_demo/constants/title_strings.dart';
 import 'package:rick_and_morty_demo/models/character_model/character_model.dart';
 import 'package:rick_and_morty_demo/screens/widgets/card_widget.dart';
+import 'package:rick_and_morty_demo/screens/widgets/container_shadow_widget.dart';
 
 import 'widgets/unknown_text_widget.dart';
 import '../business/character_manager.dart';
@@ -59,21 +60,7 @@ class CharacterScreen extends StatelessWidget {
       builder: (context, value, child) {
         character = value.character;
         return CardWidget(
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: Colors.deepOrange.shade100,
-                border: Border.all(color: Colors.transparent),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.deepOrange.shade400,
-                      spreadRadius: 4,
-                      offset: const Offset(4, 4)),
-                  BoxShadow(
-                      color: Colors.deepOrange.shade400,
-                      spreadRadius: 4,
-                      offset: const Offset(-4, -4))
-                ]),
+          child: ContainerShadowWidget(
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: Column(children: [
