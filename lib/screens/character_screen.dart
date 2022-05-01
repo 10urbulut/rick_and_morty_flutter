@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_demo/business/episode_manager.dart';
@@ -109,11 +110,11 @@ class CharacterScreen extends StatelessWidget {
     );
   }
 
-  SizedBox _informationsField(BuildContext context) {
-    return SizedBox(
-        height: MediaQuery.of(context).size.height / 3.88,
+  _informationsField(BuildContext context) {
+    return Expanded(
+        // height: MediaQuery.of(context).size.height / 3.9,
         child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.only(left: 15,right: 18,bottom: 8),
           children: [
             character?.location?.name == null
                 ? UnknownTextWidget(value: 'Location')
@@ -192,8 +193,22 @@ class CharacterScreen extends StatelessWidget {
   Text get _genderField =>
       Text("Gender: " + character!.gender.toString(), style: _style);
 
-  Text get _statusField =>
-      Text("Status: " + character!.status.toString(), style: _style);
+  get _statusField => Stack(
+        
+        children: [
+          Icon(Icons.circle,
+              color: character?.status == 'Alive'
+                  ? Colors.green
+                  : character?.status == 'unknown'
+                      ? Colors.blue
+                      : character?.status == 'Dead'
+                          ? Colors.red
+                          : Colors.amber,
+              size: 10),
+          Text(character!.status.toString(), style: _style),
+        ],
+      );
+  // Text("Status: " + character!.status.toString(), style: _style);
 
   Expanded get _locationField => Expanded(
         child: Text("Location: " + character!.location!.name.toString(),

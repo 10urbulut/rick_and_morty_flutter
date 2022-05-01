@@ -23,6 +23,7 @@ dependencies:
   # Responsive Design Helper
   responsive_framework: ^0.1.7
   infinite_scroll_pagination: ^3.1.0
+  vector_math: ^2.1.1
 
 dev_dependencies:
   flutter_test:

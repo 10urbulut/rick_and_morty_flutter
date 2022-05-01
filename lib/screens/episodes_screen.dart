@@ -79,6 +79,7 @@ class _EpisodesScreenState extends State<EpisodesScreen> {
       BuildContext context) {
     return SearchOpenFloatingActionButton(
       onPressed: () {
+          context.read<EpisodeManager>().getEpisodeWithFilter("");
         context.read<EpisodeManager>().setSearchVisible;
       },
     );
@@ -88,6 +89,7 @@ class _EpisodesScreenState extends State<EpisodesScreen> {
       BuildContext context) {
     return SearchCloseFloatingActionButton(onPressed: () async {
       context.read<EpisodeManager>().getEpisodeWithFilter("");
+      page=2;
       context.read<EpisodeManager>().setSearchVisible;
     });
   }
@@ -195,7 +197,8 @@ class _EpisodesScreenState extends State<EpisodesScreen> {
   Future<void> loadMoreEpisode() async {
     if (_scroll!.position.pixels >= _scroll!.position.maxScrollExtent &&
         pageStatus.value != PageStatus.newPageLoading &&
-        page <= context.read<EpisodeManager>().episodeResponse!.info!.pages!) {
+        page <= context.read<EpisodeManager>().episodeResponse!.info!.pages! &&
+       !context.read<EpisodeManager>().searchVisible) {
       debugPrint(page.toString());
       pageStatus.value = PageStatus.newPageLoading;
       await context.read<EpisodeManager>().getEpisode(page: (page++));

@@ -9,7 +9,7 @@ class SearchOpenFloatingActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton.small(
         heroTag: 'open',
-        elevation: 15,
+        elevation: 5,
         tooltip: ToolTipStrings.SEARCH_ON,
         onPressed: onPressed,
         child: const Icon(

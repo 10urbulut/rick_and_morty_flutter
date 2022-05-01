@@ -9,7 +9,7 @@ class SearchCloseFloatingActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton.small(
         heroTag: 'close',
-        elevation: 15,
+        elevation: 5,
         tooltip: ToolTipStrings.SEARCH_OFF,
         onPressed: onPressed,
         child: const Icon(

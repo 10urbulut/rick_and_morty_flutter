@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_final_fields
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +10,7 @@ import 'package:rick_and_morty_demo/constants/tool_tip_strings.dart';
 import 'package:rick_and_morty_demo/screens/widgets/search_close_floating_action_button%20copy.dart';
 import 'package:rick_and_morty_demo/screens/widgets/search_field_text_field.dart';
 import 'package:rick_and_morty_demo/screens/widgets/search_open_floating_action_button.dart';
+import 'package:vector_math/vector_math_64.dart' as math;
 
 import '../business/character_manager.dart';
 import '../business/episode_manager.dart';
@@ -193,8 +196,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
   Widget _cardWidget(CharacterModel? data, BuildContext context) {
     return Tooltip(
       message: ToolTipStrings.TAP_FOR_THE_CHARACTER_DETAIL,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
+      child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(50),
             color: Colors.deepOrange.shade200,
@@ -328,9 +330,10 @@ class _CharactersScreenState extends State<CharactersScreen> {
   }
 
   Future<void> loadMoreCharacter() async {
-    if (_scroll!.position.pixels >= _scroll!.position.maxScrollExtent &&
+    if (_scroll!.position.pixels >= _scroll!.position.maxScrollExtent -10 &&
         pageStatus.value != PageStatus.newPageLoading &&
-        page <= context.read<CharacterManager>().characters!.info!.pages!) {
+        page <= context.read<CharacterManager>().characters!.info!.pages! &&
+        !context.read<CharacterManager>().searchVisible) {
       print(page);
       pageStatus.value = PageStatus.newPageLoading;
       await context.read<CharacterManager>().getCharacters(page: (page++));
