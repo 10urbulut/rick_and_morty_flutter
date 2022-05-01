@@ -96,7 +96,7 @@ class CharacterScreen extends StatelessWidget {
     return SizedBox(
       height: 50,
       child: Card(
-        elevation: 30,
+        elevation: 40,
         color: Colors.transparent,
         child: Text(
           character?.name ?? 'No Name',
@@ -110,51 +110,49 @@ class CharacterScreen extends StatelessWidget {
     );
   }
 
-  _informationsField(BuildContext context) {
+  Widget _informationsField(BuildContext context) {
     return Expanded(
-        // height: MediaQuery.of(context).size.height / 3.9,
         child: ListView(
-          padding: const EdgeInsets.only(left: 15,right: 18,bottom: 8),
-          children: [
-            character?.location?.name == null
-                ? UnknownTextWidget(value: 'Location')
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _locationField,
-                      GestureDetector(
-                        child: const Icon(Icons.info_outline),
-                        onTap: () async {
-                          await context
-                              .read<LocationManager>()
-                              .getLocation(character!.location!.url.toString());
-                          Navigator.pushNamed(
-                              context, NamedRouteStrings.LOCATION);
-                        },
-                      )
-                    ],
-                  ),
-            _divider,
-            character?.status == null
-                ? UnknownTextWidget(value: character?.status)
-                : _statusField,
-            _divider,
-            character?.gender == null
-                ? UnknownTextWidget(
-                    value: character?.gender,
+      padding: const EdgeInsets.only(left: 15, right: 18, bottom: 8),
+      children: [
+        character?.location?.name == null
+            ? UnknownTextWidget(value: 'Location')
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _locationField,
+                  GestureDetector(
+                    child: const Icon(Icons.info_outline),
+                    onTap: () async {
+                      await context
+                          .read<LocationManager>()
+                          .getLocation(character!.location!.url.toString());
+                      Navigator.pushNamed(context, NamedRouteStrings.LOCATION);
+                    },
                   )
-                : _genderField,
-            _divider,
-            _originField(context),
-            _divider,
-            character?.type.toString() == ""
-                ? UnknownTextWidget(value: "Type")
-                : _typeField,
-            _divider,
-            character?.species == null ? const Text("Unknown") : _speciesField,
-            _divider,
-          ],
-        ));
+                ],
+              ),
+        _divider,
+        character?.status == null
+            ? UnknownTextWidget(value: character?.status)
+            : _statusField,
+        _divider,
+        character?.gender == null
+            ? UnknownTextWidget(
+                value: character?.gender,
+              )
+            : _genderField,
+        _divider,
+        _originField(context),
+        _divider,
+        character?.type.toString() == ""
+            ? UnknownTextWidget(value: "Type")
+            : _typeField,
+        _divider,
+        character?.species == null ? const Text("Unknown") : _speciesField,
+        _divider,
+      ],
+    ));
   }
 
   Row _originField(BuildContext context) {
@@ -194,7 +192,6 @@ class CharacterScreen extends StatelessWidget {
       Text("Gender: " + character!.gender.toString(), style: _style);
 
   get _statusField => Stack(
-        
         children: [
           Icon(Icons.circle,
               color: character?.status == 'Alive'

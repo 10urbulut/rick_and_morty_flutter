@@ -10,9 +10,10 @@ class SearchFieldTextField extends StatelessWidget {
     required this.isLoading,
     required this.hintText,
     this.startSearchOnTap,
+    this.onSubmitted,
   }) : super(key: key);
   String hintText;
-
+  void Function(String value)? onSubmitted;
   void Function(String value)? onChanged;
   bool isLoading;
   void Function()? startSearchOnTap;
@@ -23,6 +24,8 @@ class SearchFieldTextField extends StatelessWidget {
         width: 250,
         height: 35,
         child: TextField(
+          onSubmitted: onSubmitted,
+          textInputAction: TextInputAction.search,
           onChanged: onChanged,
           cursorColor: Theme.of(context).appBarTheme.backgroundColor,
           toolbarOptions: const ToolbarOptions(paste: true),

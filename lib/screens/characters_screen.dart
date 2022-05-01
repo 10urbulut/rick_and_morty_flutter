@@ -81,6 +81,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
       BuildContext context) {
     return SearchCloseFloatingActionButton(onPressed: () async {
       context.read<CharacterManager>().getCharacterWithFilter("");
+      page = 2;
       context.read<CharacterManager>().setSearchVisible;
     });
   }
@@ -147,6 +148,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
       title: Consumer<CharacterManager>(
         builder: (context, value, child) => AnimatedCrossFade(
             firstChild: SearchFieldTextField(
+                onSubmitted: (_) => value.getCharacterWithFilter(_searchValue),
                 startSearchOnTap: () =>
                     value.getCharacterWithFilter(_searchValue),
                 isLoading: value.isLoading,
@@ -173,8 +175,9 @@ class _CharactersScreenState extends State<CharactersScreen> {
     return ListView.builder(
         controller: _scroll,
         padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width / 100,
-            vertical: MediaQuery.of(context).size.height / 28),
+            horizontal: MediaQuery.of(context).size.width / 35,
+            vertical: MediaQuery.of(context).size.height / 15
+            ),
         itemCount: value.length,
         itemBuilder: (context, index) {
           CharacterModel data = value[index];
@@ -209,8 +212,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
               ),
             ]),
         margin: EdgeInsets.symmetric(
-            vertical: MediaQuery.of(context).size.height / 50,
-            horizontal: MediaQuery.of(context).size.width / 50),
+            vertical: MediaQuery.of(context).size.height / 50),
         child: Stack(
           alignment: AlignmentDirectional.centerEnd,
           children: [
@@ -330,11 +332,11 @@ class _CharactersScreenState extends State<CharactersScreen> {
   }
 
   Future<void> loadMoreCharacter() async {
-    if (_scroll!.position.pixels >= _scroll!.position.maxScrollExtent -10 &&
+    if (_scroll!.position.pixels >= _scroll!.position.maxScrollExtent - 10 &&
         pageStatus.value != PageStatus.newPageLoading &&
         page <= context.read<CharacterManager>().characters!.info!.pages! &&
         !context.read<CharacterManager>().searchVisible) {
-      print(page);
+      debugPrint(page.toString());
       pageStatus.value = PageStatus.newPageLoading;
       await context.read<CharacterManager>().getCharacters(page: (page++));
       pageStatus.value = PageStatus.newPageLoaded;
