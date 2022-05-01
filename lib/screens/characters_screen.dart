@@ -52,10 +52,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      body: Stack(alignment: AlignmentDirectional.topStart, children: [
-        _body(context),
-        _elevatedEpisodesButton(context),
-      ]),
+      body: _body(context),
       floatingActionButton: Consumer<CharacterManager>(
         builder: (context, value, child) => AnimatedCrossFade(
             firstChild: _searchOpenFloatinActionButton(context),
@@ -67,6 +64,13 @@ class _CharactersScreenState extends State<CharactersScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
+  }
+
+  Stack _body(BuildContext context) {
+    return Stack(alignment: AlignmentDirectional.topStart, children: [
+      _bodyFutureBuilder(context),
+      _elevatedEpisodesButton(context),
+    ]);
   }
 
   SearchOpenFloatingActionButton _searchOpenFloatinActionButton(
@@ -122,7 +126,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
     );
   }
 
-  FutureBuilder<CharactersModel> _body(BuildContext context) {
+  FutureBuilder<CharactersModel> _bodyFutureBuilder(BuildContext context) {
     return FutureBuilder<CharactersModel>(
         future: context.read<CharacterManager>().getCharacters(),
         builder: (context, snapshot) {
@@ -166,13 +170,13 @@ class _CharactersScreenState extends State<CharactersScreen> {
 
   _consumerForCard() {
     return Consumer<CharacterManager>(
-      builder: (context, value, child) =>
-          _listViewBuilderForConsumer(value.charactersForPagination, context),
+      builder: (context, value, child) => _listViewBuilderForConsumer(
+          value.charactersForPagination, context, value),
     );
   }
 
-  _listViewBuilderForConsumer(
-      List<CharacterModel> value, BuildContext context) {
+  _listViewBuilderForConsumer(List<CharacterModel> value, BuildContext context,
+      CharacterManager manager) {
     return ListView.builder(
         controller: _scroll,
         padding: EdgeInsets.only(
@@ -187,9 +191,9 @@ class _CharactersScreenState extends State<CharactersScreen> {
             angle: -0.1,
             child: GestureDetector(
               onTap: () async {
-                context.read<CharacterManager>().setSearchVisibleFalse;
-
-                context.read<CharacterManager>().setCharacter = data;
+                manager.setSearchVisibleFalse;
+                manager.setImageStatusFalse;
+                manager.setCharacter = data;
                 Navigator.pushNamed(context, NamedRouteStrings.CHARACTER);
               },
               child: _cardWidget(data, context),

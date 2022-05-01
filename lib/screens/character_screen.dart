@@ -68,7 +68,7 @@ class CharacterScreen extends StatelessWidget {
                 _characterNameTextWithSizedBox(context),
                 character == null
                     ? const Text("No image")
-                    : _imageField(character!),
+                    : _imageField(character!, value),
                 const Divider(color: Colors.transparent),
                 _informationsField(context),
               ]),
@@ -106,18 +106,7 @@ class CharacterScreen extends StatelessWidget {
             ? UnknownTextWidget(value: 'Location')
             : Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _locationField,
-                  GestureDetector(
-                    child: const Icon(Icons.info_outline),
-                    onTap: () async {
-                      await context
-                          .read<LocationManager>()
-                          .getLocation(character!.location!.url.toString());
-                      Navigator.pushNamed(context, NamedRouteStrings.LOCATION);
-                    },
-                  )
-                ],
+                children: [_locationField, _locationInfoIconfield(context)],
               ),
         _divider,
         character?.status == null
@@ -125,9 +114,7 @@ class CharacterScreen extends StatelessWidget {
             : _statusField,
         _divider,
         character?.gender == null
-            ? UnknownTextWidget(
-                value: character?.gender,
-              )
+            ? UnknownTextWidget(value: character?.gender)
             : _genderField,
         _divider,
         _originField(context),
@@ -140,6 +127,18 @@ class CharacterScreen extends StatelessWidget {
         _divider,
       ],
     ));
+  }
+
+  GestureDetector _locationInfoIconfield(BuildContext context) {
+    return GestureDetector(
+      child: const Icon(Icons.info_outline),
+      onTap: () async {
+        await context
+            .read<LocationManager>()
+            .getLocation(character!.location!.url.toString());
+        Navigator.pushNamed(context, NamedRouteStrings.LOCATION);
+      },
+    );
   }
 
   Row _originField(BuildContext context) {
@@ -192,7 +191,6 @@ class CharacterScreen extends StatelessWidget {
           Text(character!.status.toString(), style: _style),
         ],
       );
-  // Text("Status: " + character!.status.toString(), style: _style);
 
   Expanded get _locationField => Expanded(
         child: Text("Location: " + character!.location!.name.toString(),
@@ -201,30 +199,68 @@ class CharacterScreen extends StatelessWidget {
 
   Divider get _divider => const Divider(height: 5);
 
-  Center _imageField(CharacterModel character) {
+  Center _imageField(CharacterModel character, CharacterManager manager) {
     return Center(
       child: character.image == null
           ? const Text("Doesen't Exist")
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                  character.image ?? ConstantStrings.noImageUrl,
-                  width: 250,
-                  height: 250,
-                  loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) {
-                  return child;
-                }
-                return Center(
-                    heightFactor: 3,
-                    widthFactor: 3.5,
-                    child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                            : null));
-              }),
+          : AnimatedCrossFade(
+              crossFadeState: manager.imageStatus
+                  ? CrossFadeState.showSecond
+                  : CrossFadeState.showFirst,
+              duration: const Duration(milliseconds: searchFieldDuration),
+              secondChild: _secondChildBigImage(manager, character),
+              firstChild: _firstChildSmallImage(manager, character),
             ),
+    );
+  }
+
+  GestureDetector _firstChildSmallImage(
+      CharacterManager manager, CharacterModel character) {
+    return GestureDetector(
+      onDoubleTap: () => manager.setImageStatus,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Stack(
+          alignment: AlignmentDirectional.topEnd,
+          children: [
+            Image.network(character.image ?? ConstantStrings.noImageUrl,
+                width: 250,
+                height: 250, loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              }
+              return Center(
+                  heightFactor: 3,
+                  widthFactor: 3.5,
+                  child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes!
+                          : null));
+            }),
+            GestureDetector(
+                onTap: () => manager.setImageStatus,
+                child: Icon(Icons.zoom_in,
+                    size: 20, color: Colors.deepOrange.shade400)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  GestureDetector _secondChildBigImage(
+      CharacterManager manager, CharacterModel character) {
+    return GestureDetector(
+      onDoubleTap: () => manager.setImageStatus,
+      child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Stack(alignment: AlignmentDirectional.topEnd, children: [
+            Image.network(character.image.toString()),
+            GestureDetector(
+                onTap: () => manager.setImageStatus,
+                child: Icon(Icons.zoom_out,
+                    size: 20, color: Colors.deepOrange.shade400)),
+          ])),
     );
   }
 }
