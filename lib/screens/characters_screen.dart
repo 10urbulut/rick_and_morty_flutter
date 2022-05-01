@@ -176,8 +176,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
         controller: _scroll,
         padding: EdgeInsets.symmetric(
             horizontal: MediaQuery.of(context).size.width / 35,
-            vertical: MediaQuery.of(context).size.height / 15
-            ),
+            vertical: MediaQuery.of(context).size.height / 15),
         itemCount: value.length,
         itemBuilder: (context, index) {
           CharacterModel data = value[index];
@@ -220,6 +219,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
             Row(
               children: [
                 _cardFirstColumn(data, context),
+                VerticalDivider(),
                 _cardSecondColumn(data, context),
               ],
             ),
@@ -230,15 +230,12 @@ class _CharactersScreenState extends State<CharactersScreen> {
   }
 
   Widget _cardSecondColumn(CharacterModel? data, BuildContext context) {
-    return SizedBox(
-      width: 220,
-      child: Column(
-        children: [
-          _nameField(context, data),
-          _statusField(context, data),
-          const Divider(color: Colors.transparent),
-        ],
-      ),
+    return Column(
+      children: [
+        _nameField(context, data),
+        _statusField(context, data),
+        const Divider(color: Colors.transparent),
+      ],
     );
   }
 
