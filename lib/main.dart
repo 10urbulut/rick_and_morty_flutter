@@ -11,7 +11,7 @@ import 'constants/named_routes/named_routes.dart';
 import 'constants/project_theme.dart';
 
 void main() {
-  HttpOverrides.global = MyHttpOverrides();
+  //HttpOverrides.global = MyHttpOverrides();
   runApp(const App());
 }
 

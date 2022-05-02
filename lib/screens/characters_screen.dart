@@ -1,17 +1,16 @@
 // ignore_for_file: prefer_final_fields
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_demo/constants/enums.dart';
 import 'package:rick_and_morty_demo/constants/tool_tip_strings.dart';
 import 'package:rick_and_morty_demo/screens/widgets/container_shadow_widget.dart';
-import 'package:rick_and_morty_demo/screens/widgets/search_close_floating_action_button%20copy.dart';
+import 'package:rick_and_morty_demo/screens/widgets/search_close_floating_action_button.dart';
 import 'package:rick_and_morty_demo/screens/widgets/search_field_text_field.dart';
 import 'package:rick_and_morty_demo/screens/widgets/search_open_floating_action_button.dart';
-import 'package:vector_math/vector_math_64.dart' as math;
+import 'package:url_launcher/url_launcher.dart' as ul;
 
 import '../business/character_manager.dart';
 import '../business/episode_manager.dart';
@@ -51,7 +50,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _appBar(),
+      appBar: _appBar,
       body: _body(context),
       floatingActionButton: Consumer<CharacterManager>(
         builder: (context, value, child) => AnimatedCrossFade(
@@ -84,11 +83,13 @@ class _CharactersScreenState extends State<CharactersScreen> {
 
   SearchCloseFloatingActionButton _searchCloseFloatinActionButton(
       BuildContext context) {
-    return SearchCloseFloatingActionButton(onPressed: () async {
-      context.read<CharacterManager>().getCharacterWithFilter("");
-      page = 2;
-      context.read<CharacterManager>().setSearchVisible;
-    });
+    return SearchCloseFloatingActionButton(
+      onPressed: () async {
+        context.read<CharacterManager>().getCharacterWithFilter("");
+        page = 2;
+        context.read<CharacterManager>().setSearchVisible;
+      },
+    );
   }
 
   Widget _elevatedEpisodesButton(BuildContext context) {
@@ -99,21 +100,11 @@ class _CharactersScreenState extends State<CharactersScreen> {
           child: Tooltip(
             message: ToolTipStrings.TAP_FOR_ALL_EPISODES,
             child: ElevatedButton.icon(
-              onPressed: () async {
-                context.read<EpisodeManager>().setSearchVisibleFalse;
-                context.read<EpisodeManager>().clearEpisodes();
-                await context.read<EpisodeManager>().getEpisode();
-                Navigator.pushNamed(context, NamedRouteStrings.EPISODES);
-              },
+              onPressed: () async =>
+                  await _elevatedEpisodesButtonOnPressed(context),
               icon: const Icon(Icons.turn_right_sharp),
               label: const Text("All\n" + TitleStrings.EPISODES),
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                elevation: 2,
-                primary: Theme.of(context).appBarTheme.backgroundColor,
-                animationDuration: const Duration(seconds: 2),
-              ),
+              style: _elevatedEpisodesButtonStyle(context),
             ),
           ),
         ),
@@ -126,21 +117,34 @@ class _CharactersScreenState extends State<CharactersScreen> {
     );
   }
 
+  ButtonStyle _elevatedEpisodesButtonStyle(BuildContext context) {
+    return ElevatedButton.styleFrom(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 2,
+      primary: Theme.of(context).appBarTheme.backgroundColor,
+      animationDuration: const Duration(seconds: 2),
+    );
+  }
+
+  Future<void> _elevatedEpisodesButtonOnPressed(BuildContext context) async {
+    context.read<EpisodeManager>().setSearchVisibleFalse;
+    context.read<EpisodeManager>().clearEpisodes();
+    await context.read<EpisodeManager>().getEpisode();
+    Navigator.pushNamed(context, NamedRouteStrings.EPISODES);
+  }
+
   FutureBuilder<CharactersModel> _bodyFutureBuilder(BuildContext context) {
     return FutureBuilder<CharactersModel>(
         future: context.read<CharacterManager>().getCharacters(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              return Center(
-                  child: SizedBox(
-                      width: 200,
-                      child: Transform.rotate(
-                          angle: -0.1,
-                          child: const LinearProgressIndicator())));
+              return _connectionStateProgressWidget();
 
             case ConnectionState.done:
-              return _consumerForCard();
+              return snapshot.data == null
+                  ? _ifDataNullField
+                  : _consumerForCard;
 
             default:
               throw Exception();
@@ -148,32 +152,148 @@ class _CharactersScreenState extends State<CharactersScreen> {
         });
   }
 
-  AppBar _appBar() {
-    return AppBar(
-      title: Consumer<CharacterManager>(
-        builder: (context, value, child) => AnimatedCrossFade(
-            firstChild: SearchFieldTextField(
-                onSubmitted: (_) => value.getCharacterWithFilter(_searchValue),
-                startSearchOnTap: () =>
-                    value.getCharacterWithFilter(_searchValue),
-                isLoading: value.isLoading,
-                hintText: TitleStrings.SEARCH_BY_CHARACTER_NAME,
-                onChanged: (value) => _searchValue = value),
-            secondChild: const Text(TitleStrings.CHARACTERS),
-            crossFadeState: value.searchVisible
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            duration: const Duration(milliseconds: searchFieldDuration)),
+  Center _connectionStateProgressWidget() {
+    return Center(
+        child: SizedBox(
+            width: 200,
+            child: Transform.rotate(
+                angle: -0.1, child: const LinearProgressIndicator())));
+  }
+
+  Center get _ifDataNullField => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Is your internet working? Please check! ',
+              style: GoogleFonts.combo(fontSize: 20),
+            ),
+            _refreshCharactersIsEmptyIconButton,
+          ],
+        ),
+      );
+
+  IconButton get _refreshCharactersIsEmptyIconButton {
+    return IconButton(
+      //If set to state again, the future builder run again.
+      //That means service will send new request to api then refresh was worked!
+      onPressed: () => setState(() {}),
+      icon: const Icon(
+        Icons.refresh,
       ),
     );
   }
 
-  _consumerForCard() {
-    return Consumer<CharacterManager>(
-      builder: (context, value, child) => _listViewBuilderForConsumer(
-          value.charactersForPagination, context, value),
+  AppBar get _appBar => AppBar(
+        title: Consumer<CharacterManager>(
+          builder: (context, value, child) => AnimatedCrossFade(
+              firstChild: SearchFieldTextField(
+                  onSubmitted: (_) =>
+                      value.getCharacterWithFilter(_searchValue),
+                  startSearchOnTap: () =>
+                      value.getCharacterWithFilter(_searchValue),
+                  isLoading: value.isLoading,
+                  hintText: TitleStrings.SEARCH_BY_CHARACTER_NAME,
+                  onChanged: (value) => _searchValue = value),
+              secondChild: const Text(TitleStrings.CHARACTERS),
+              crossFadeState: value.searchVisible
+                  ? CrossFadeState.showFirst
+                  : CrossFadeState.showSecond,
+              duration: const Duration(milliseconds: searchFieldDuration)),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => showDialog(
+                context: context,
+                builder: (context) {
+                  return SimpleDialog(
+                    title: Column(
+                      children: [
+                        const Text("About me"),
+                        Row(
+                          children: const [
+                            Expanded(
+                              child: Text(aboutMe),
+                            ),
+                          ],
+                        ),
+                        _aboutMeMailField,
+                        const Divider(color: Colors.transparent),
+                        _buyMeACoffeeButton,
+                        const Divider(color: Colors.transparent),
+                      ],
+                    ),
+                  );
+                }),
+            icon: const Icon(
+              Icons.adjust_sharp,
+              color: Colors.white70,
+              size: 10,
+            ),
+          ),
+          const VerticalDivider(
+            color: Colors.transparent,
+            width: 20,
+          ),
+        ],
+      );
+
+  Widget get _aboutMeMailField {
+    return GestureDetector(
+      onTap: () {
+        Clipboard.setData(const ClipboardData(text: onurBulutGMail)).then(
+          (value) => ScaffoldMessenger.of(context).showSnackBar(
+            _aboutMeMailCoppiedSnackBarMessage,
+          ),
+        );
+      },
+      child: Text(
+        onurBulutGMail,
+        style: GoogleFonts.sansita(fontSize: 14, color: Colors.indigo),
+      ),
     );
   }
+
+  SnackBar get _aboutMeMailCoppiedSnackBarMessage {
+    return SnackBar(
+      content: const Text(
+        "Coppied!",
+        textAlign: TextAlign.center,
+      ),
+      backgroundColor: Theme.of(context).primaryColor,
+    );
+  }
+
+  TextButton get _buyMeACoffeeButton {
+    return TextButton.icon(
+      onPressed: () async {
+        if (!await ul.launch(buyMeACoffeeUrl)) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: _errorMessageForBuyMeACoffee,
+            backgroundColor: Theme.of(context).primaryColor,
+          ));
+        }
+      },
+      icon: Image.asset(
+        "assets/images/bmc.png",
+        height: 25,
+        width: 25,
+      ),
+      label: const Text("Buy me a coffee  "),
+    );
+  }
+
+  Text get _errorMessageForBuyMeACoffee {
+    return const Text(
+      "Ups! You should have went to;\n" + buyMeACoffeeUrl,
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Widget get _consumerForCard => Consumer<CharacterManager>(
+        builder: (context, value, child) => _listViewBuilderForConsumer(
+            value.charactersForPagination, context, value),
+      );
 
   _listViewBuilderForConsumer(List<CharacterModel> value, BuildContext context,
       CharacterManager manager) {

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../constants/tool_tip_strings.dart';
 
+// ignore: must_be_immutable
 class SearchFieldTextField extends StatelessWidget {
   SearchFieldTextField({
     Key? key,

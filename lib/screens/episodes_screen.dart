@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_demo/constants/tool_tip_strings.dart';
-import 'package:rick_and_morty_demo/screens/widgets/search_close_floating_action_button%20copy.dart';
+import 'package:rick_and_morty_demo/screens/widgets/search_close_floating_action_button.dart';
 import 'package:rick_and_morty_demo/screens/widgets/search_field_text_field.dart';
 import 'package:rick_and_morty_demo/screens/widgets/search_open_floating_action_button.dart';
 

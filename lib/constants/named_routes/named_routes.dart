@@ -11,9 +11,9 @@ class NamedRoutes {
         NamedRouteStrings.CHARACTER: (BuildContext context) =>
             CharacterScreen(),
         NamedRouteStrings.CHARACTERS: (BuildContext context) =>
-             CharactersScreen(),
+            const CharactersScreen(),
         NamedRouteStrings.EPISODES: (BuildContext context) =>
-             EpisodesScreen(),
+            const EpisodesScreen(),
         NamedRouteStrings.LOCATION: (BuildContext context) => LocationScreen(),
       };
 }

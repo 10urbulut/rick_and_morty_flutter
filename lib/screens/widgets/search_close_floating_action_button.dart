@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: must_be_immutable
 
+import 'package:flutter/material.dart';
 import '../../constants/tool_tip_strings.dart';
 
 class SearchCloseFloatingActionButton extends StatelessWidget {

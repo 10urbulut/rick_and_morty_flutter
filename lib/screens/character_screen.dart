@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:rick_and_morty_demo/business/episode_manager.dart';
-import 'package:rick_and_morty_demo/business/location_manager.dart';
-import 'package:rick_and_morty_demo/constants/named_routes/named_route_strings.dart';
-import 'package:rick_and_morty_demo/constants/title_strings.dart';
-import 'package:rick_and_morty_demo/models/character_model/character_model.dart';
-import 'package:rick_and_morty_demo/screens/widgets/card_widget.dart';
-import 'package:rick_and_morty_demo/screens/widgets/container_shadow_widget.dart';
 
-import 'widgets/unknown_text_widget.dart';
 import '../business/character_manager.dart';
+import '../business/episode_manager.dart';
+import '../business/location_manager.dart';
 import '../constants/constant_strings.dart';
+import '../constants/named_routes/named_route_strings.dart';
+import '../constants/title_strings.dart';
+import '../models/character_model/character_model.dart';
+import 'widgets/card_widget.dart';
+import 'widgets/container_shadow_widget.dart';
+import 'widgets/unknown_text_widget.dart';
 
+// ignore: must_be_immutable
 class CharacterScreen extends StatelessWidget {
   CharacterScreen({Key? key}) : super(key: key);
 

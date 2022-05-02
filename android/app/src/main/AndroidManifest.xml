@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="dev.onurbulut.rick_and_morty_demo">
+    <uses-permission android:name="android.permission.INTERNET"/>
+
    <application
         android:label="rick_and_morty_demo"
         android:name="${applicationName}"

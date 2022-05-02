@@ -1,43 +1,78 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProjectTheme {
   static ThemeData get themeData {
     return ThemeData(
-        tooltipTheme: _tooltipTheme,
-        useMaterial3: true,
-        splashColor: Colors.amber,
-        errorColor: Colors.red,
-        primaryColor: Colors.deepOrange,
-        colorScheme: ColorScheme.fromSwatch(accentColor: Colors.amber.shade800),
-        primaryColorLight: Colors.deepOrange,
-        pageTransitionsTheme: const PageTransitionsTheme(builders: {
-          TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
-          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-        }),
-        dividerTheme: const DividerThemeData(
-          color: Colors.black54,
-          thickness: 3,
+      tooltipTheme: _tooltipTheme,
+      useMaterial3: true,
+      splashColor: Colors.amber,
+      errorColor: Colors.red,
+      primaryColor: Colors.deepOrange,
+      colorScheme: _colorScheme,
+      primaryColorLight: Colors.deepOrange,
+      pageTransitionsTheme: _pageTransitionTheme,
+      dividerTheme: _dividerTheme,
+      progressIndicatorTheme: _progressIndicatorTheme,
+      scaffoldBackgroundColor: Colors.redAccent.shade100,
+      textButtonTheme: _textButtonTheme,
+      cardTheme: _cardTheme,
+      dialogTheme: _dialogTheme,
+      appBarTheme: _appBarTheme,
+    );
+  }
+
+  static DialogTheme get _dialogTheme {
+    return DialogTheme(
+      titleTextStyle: GoogleFonts.combo(
+        color: Colors.black,
+        fontSize: 17,
+      ),
+      backgroundColor: Colors.deepOrange.shade100,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(50),
+      ),
+    );
+  }
+
+  static DividerThemeData get _dividerTheme {
+    return const DividerThemeData(
+      color: Colors.black54,
+      thickness: 3,
+    );
+  }
+
+  static PageTransitionsTheme get _pageTransitionTheme {
+    return const PageTransitionsTheme(builders: {
+      TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
+      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+    });
+  }
+
+  static ColorScheme get _colorScheme =>
+      ColorScheme.fromSwatch(accentColor: Colors.amber.shade800);
+
+  static ProgressIndicatorThemeData get _progressIndicatorTheme {
+    return const ProgressIndicatorThemeData(
+      color: Colors.orange,
+    );
+  }
+
+  static CardTheme get _cardTheme {
+    return CardTheme(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        color: Colors.deepOrange.shade100);
+  }
+
+  static TextButtonThemeData get _textButtonTheme {
+    return TextButtonThemeData(
+      style: TextButton.styleFrom(textStyle: GoogleFonts.sansita(),
+        backgroundColor: Colors.amber.shade50,primary: Colors.black87,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
         ),
-        progressIndicatorTheme: const ProgressIndicatorThemeData(
-          color: Colors.orange,
-        ),
-        scaffoldBackgroundColor: Colors.redAccent.shade100,
-        textTheme: const TextTheme(),
-        textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-                // backgroundColor: Colors.indigo,
-                elevation: 0,
-                primary: Colors.black87,
-                textStyle: const TextStyle(
-                  fontSize: 18,
-                ))),
-        cardTheme: CardTheme(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            color: Colors.deepOrange.shade100),
-        appBarTheme: _appBarTheme);
+      ),
+    );
   }
 
   static TooltipThemeData get _tooltipTheme => TooltipThemeData(

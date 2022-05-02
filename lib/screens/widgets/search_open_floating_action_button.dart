@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../constants/tool_tip_strings.dart';
 
+// ignore: must_be_immutable
 class SearchOpenFloatingActionButton extends StatelessWidget {
   SearchOpenFloatingActionButton({Key? key, this.onPressed}) : super(key: key);
   void Function()? onPressed;
