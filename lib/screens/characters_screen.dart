@@ -202,34 +202,18 @@ class _CharactersScreenState extends State<CharactersScreen> {
               duration: const Duration(milliseconds: searchFieldDuration)),
         ),
         actions: [
-          IconButton(
-            onPressed: () => showDialog(
-                context: context,
-                builder: (context) {
-                  return SimpleDialog(
-                    title: Column(
-                      children: [
-                        const Text("About me"),
-                        Row(
-                          children: const [
-                            Expanded(
-                              child: Text(aboutMe),
-                            ),
-                          ],
-                        ),
-                        _aboutMeMailField,
-                        const Divider(color: Colors.transparent),
-                        _buyMeACoffeeButton,
-                        const Divider(color: Colors.transparent),
-                      ],
-                    ),
-                  );
-                }),
-            icon: const Icon(
-              Icons.adjust_sharp,
-              color: Colors.white70,
-              size: 10,
-            ),
+          TextButton(
+            style: TextButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                primary: Colors.white70,
+                textStyle: GoogleFonts.sansita(fontSize: 11)),
+            child: Text("About\n me?   "),
+            onPressed: () async => await _openAboutMeDialog,
+            // icon: const Icon(
+            //   Icons.adjust_sharp,
+            //   color: Colors.white70,
+            //   size: 10,
+            // ),
           ),
           const VerticalDivider(
             color: Colors.transparent,
@@ -237,6 +221,31 @@ class _CharactersScreenState extends State<CharactersScreen> {
           ),
         ],
       );
+
+  Future<dynamic> get _openAboutMeDialog {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Column(
+              children: [
+                const Text("About me", textScaleFactor: 1.2),
+                Row(
+                  children: const [
+                    Expanded(
+                      child: Text(aboutMe),
+                    ),
+                  ],
+                ),
+                _aboutMeMailField,
+                const Divider(color: Colors.transparent),
+                _buyMeACoffeeField,
+                const Divider(color: Colors.transparent),
+              ],
+            ),
+          );
+        });
+  }
 
   Widget get _aboutMeMailField {
     return GestureDetector(
@@ -264,22 +273,26 @@ class _CharactersScreenState extends State<CharactersScreen> {
     );
   }
 
-  TextButton get _buyMeACoffeeButton {
-    return TextButton.icon(
-      onPressed: () async {
-        if (!await ul.launch(buyMeACoffeeUrl)) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: _errorMessageForBuyMeACoffee,
-            backgroundColor: Theme.of(context).primaryColor,
-          ));
-        }
-      },
-      icon: Image.asset(
-        "assets/images/bmc.png",
-        height: 25,
-        width: 25,
-      ),
-      label: const Text("Buy me a coffee  "),
+  Row get _buyMeACoffeeField {
+    return Row(
+      children: [
+        const Text("If you want to "),
+        TextButton.icon(
+          onPressed: () async {
+            if (!await ul.launch(buyMeACoffeeUrl)) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: _errorMessageForBuyMeACoffee,
+              ));
+            }
+          },
+          icon: Image.asset(
+            "assets/images/bmc.png",
+            height: 25,
+            width: 25,
+          ),
+          label: const Text("Buy me a coffee  "),
+        ),
+      ],
     );
   }
 

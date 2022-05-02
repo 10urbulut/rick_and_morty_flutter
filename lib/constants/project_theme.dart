@@ -12,6 +12,7 @@ class ProjectTheme {
       colorScheme: _colorScheme,
       primaryColorLight: Colors.deepOrange,
       pageTransitionsTheme: _pageTransitionTheme,
+      snackBarTheme: _snackBarTheme,
       dividerTheme: _dividerTheme,
       progressIndicatorTheme: _progressIndicatorTheme,
       scaffoldBackgroundColor: Colors.redAccent.shade100,
@@ -21,6 +22,9 @@ class ProjectTheme {
       appBarTheme: _appBarTheme,
     );
   }
+
+  static SnackBarThemeData get _snackBarTheme =>
+      const SnackBarThemeData(backgroundColor: Colors.orange);
 
   static DialogTheme get _dialogTheme {
     return DialogTheme(
@@ -66,8 +70,10 @@ class ProjectTheme {
 
   static TextButtonThemeData get _textButtonTheme {
     return TextButtonThemeData(
-      style: TextButton.styleFrom(textStyle: GoogleFonts.sansita(),
-        backgroundColor: Colors.amber.shade50,primary: Colors.black87,
+      style: TextButton.styleFrom(
+        textStyle: GoogleFonts.sansita(),
+        backgroundColor: Colors.amber.shade50,
+        primary: Colors.black87,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(50),
         ),
