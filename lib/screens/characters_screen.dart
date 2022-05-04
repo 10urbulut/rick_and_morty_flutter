@@ -207,7 +207,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
                 backgroundColor: Colors.transparent,
                 primary: Colors.white70,
                 textStyle: GoogleFonts.sansita(fontSize: 11)),
-            child: Text("About\n me?   "),
+            child: const Text("About\n me?   "),
             onPressed: () async => await _openAboutMeDialog,
             // icon: const Icon(
             //   Icons.adjust_sharp,
