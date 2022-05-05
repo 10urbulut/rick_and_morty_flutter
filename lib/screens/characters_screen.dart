@@ -66,10 +66,13 @@ class _CharactersScreenState extends State<CharactersScreen> {
   }
 
   Stack _body(BuildContext context) {
-    return Stack(alignment: AlignmentDirectional.topStart, children: [
-      _bodyFutureBuilder(context),
-      _elevatedEpisodesButton(context),
-    ]);
+    return Stack(
+      alignment: AlignmentDirectional.topStart,
+      children: [
+        _bodyFutureBuilder(context),
+        _elevatedEpisodesButton(context),
+      ],
+    );
   }
 
   SearchOpenFloatingActionButton _searchOpenFloatinActionButton(
@@ -201,26 +204,18 @@ class _CharactersScreenState extends State<CharactersScreen> {
                   : CrossFadeState.showSecond,
               duration: const Duration(milliseconds: searchFieldDuration)),
         ),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                primary: Colors.white70,
-                textStyle: GoogleFonts.sansita(fontSize: 11)),
-            child: const Text("About\n me?   "),
-            onPressed: () async => await _openAboutMeDialog,
-            // icon: const Icon(
-            //   Icons.adjust_sharp,
-            //   color: Colors.white70,
-            //   size: 10,
-            // ),
-          ),
-          const VerticalDivider(
-            color: Colors.transparent,
-            width: 20,
-          ),
-        ],
       );
+
+  Widget get _aboutMeTextButton {
+    return TextButton(
+      style: TextButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          primary: Colors.white70,
+          textStyle: GoogleFonts.sansita(fontSize: 12)),
+      child: const Text("About\n me?   "),
+      onPressed: () async => await _openAboutMeDialog,
+    );
+  }
 
   Future<dynamic> get _openAboutMeDialog {
     return showDialog(
@@ -312,27 +307,35 @@ class _CharactersScreenState extends State<CharactersScreen> {
       CharacterManager manager) {
     return ListView.builder(
         controller: _scroll,
-        padding: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width / 35,
-            right: MediaQuery.of(context).size.width / 35,
-            top: MediaQuery.of(context).size.width / 12.5,
-            bottom: MediaQuery.of(context).size.width / 12.5),
+        padding: _listViewBuilderPadding(context),
         itemCount: value.length,
         itemBuilder: (context, index) {
           CharacterModel data = value[index];
           return Transform.rotate(
             angle: -0.1,
-            child: GestureDetector(
-              onTap: () async {
-                manager.setSearchVisibleFalse;
-                manager.setImageStatusFalse;
-                manager.setCharacter = data;
-                Navigator.pushNamed(context, NamedRouteStrings.CHARACTER);
-              },
-              child: _cardWidget(data, context),
-            ),
+            child: _cardGestureDetector(manager, data, context),
           );
         });
+  }
+
+  GestureDetector _cardGestureDetector(
+      CharacterManager manager, CharacterModel data, BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        manager.setImageStatusFalse;
+        manager.setCharacter = data;
+        Navigator.pushNamed(context, NamedRouteStrings.CHARACTER);
+      },
+      child: _cardWidget(data, context),
+    );
+  }
+
+  EdgeInsets _listViewBuilderPadding(BuildContext context) {
+    return EdgeInsets.only(
+        left: MediaQuery.of(context).size.width / 35,
+        right: MediaQuery.of(context).size.width / 35,
+        top: MediaQuery.of(context).size.width / 12.5,
+        bottom: MediaQuery.of(context).size.width / 12.5);
   }
 
   Widget _cardWidget(CharacterModel? data, BuildContext context) {
