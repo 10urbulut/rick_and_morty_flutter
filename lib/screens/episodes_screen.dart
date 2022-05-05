@@ -43,23 +43,7 @@ class _EpisodesScreenState extends State<EpisodesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Consumer<EpisodeManager>(
-          builder: (context, value, child) => AnimatedCrossFade(
-              firstChild: SearchFieldTextField(
-                  onSubmitted: (_) => value.getEpisodeWithFilter(_searchValue),
-                  startSearchOnTap: () =>
-                      value.getEpisodeWithFilter(_searchValue),
-                  isLoading: value.isLoading,
-                  hintText: TitleStrings.SEARCH_BY_EPISODE_NAME,
-                  onChanged: (value) => _searchValue = value),
-              secondChild: _appBarTitle,
-              crossFadeState: value.searchVisible
-                  ? CrossFadeState.showFirst
-                  : CrossFadeState.showSecond,
-              duration: const Duration(milliseconds: searchFieldDuration)),
-        ),
-      ),
+      appBar: _appbar,
       body: _body,
       floatingActionButton: Consumer<EpisodeManager>(
         builder: (context, value, child) => AnimatedCrossFade(
@@ -71,6 +55,26 @@ class _EpisodesScreenState extends State<EpisodesScreen> {
             duration: const Duration(milliseconds: searchFieldDuration)),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    );
+  }
+
+  AppBar get _appbar {
+    return AppBar(
+      title: Consumer<EpisodeManager>(
+        builder: (context, value, child) => AnimatedCrossFade(
+            firstChild: SearchFieldTextField(
+                onSubmitted: (_) => value.getEpisodeWithFilter(_searchValue),
+                startSearchOnTap: () =>
+                    value.getEpisodeWithFilter(_searchValue),
+                isLoading: value.isLoading,
+                hintText: TitleStrings.SEARCH_BY_EPISODE_NAME,
+                onChanged: (value) => _searchValue = value),
+            secondChild: _appBarTitle,
+            crossFadeState: value.searchVisible
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            duration: const Duration(milliseconds: searchFieldDuration)),
+      ),
     );
   }
 
@@ -188,10 +192,8 @@ class _EpisodesScreenState extends State<EpisodesScreen> {
 
   SizedBox _episodeNameField(List<EpisodeModel> episodes, int index) {
     return SizedBox(
-      width: 300,
-      child: Expanded(
-          child: Text(episodes[index].name.toString(),
-              textAlign: TextAlign.center, style: _childStyle)),
+      child: Text(episodes[index].name.toString(),
+          textAlign: TextAlign.center, style: _childStyle),
     );
   }
 
