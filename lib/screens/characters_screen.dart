@@ -212,19 +212,21 @@ class _CharactersScreenState extends State<CharactersScreen> {
 
   List<Widget> get _appBarActions {
     return <Widget>[
-      Consumer<CharacterManager>(builder: (context, value, child) {
-        return value.searchVisible
-            ? const Text("")
-            : Row(
-                children: [
-                  _aboutMeTextButton,
-                  VerticalDivider(
-                    width: MediaQuery.of(context).size.width / 18,
-                    color: Colors.transparent,
-                  ),
-                ],
-              );
-      }),
+      Consumer<CharacterManager>(
+        builder: (context, value, child) {
+          return value.searchVisible
+              ? const Text("")
+              : Row(
+                  children: [
+                    _aboutMeTextButton,
+                    VerticalDivider(
+                      width: MediaQuery.of(context).size.width / 16,
+                      color: Colors.transparent,
+                    ),
+                  ],
+                );
+        },
+      ),
     ];
   }
 
