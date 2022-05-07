@@ -35,7 +35,6 @@ class _CharactersScreenState extends State<CharactersScreen> {
       ValueNotifier<PageStatus>(PageStatus.idle);
 
   String _searchValue = "";
-
   @override
   void initState() {
     _createScroll();
@@ -178,6 +177,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
 
   IconButton get _refreshCharactersIsEmptyIconButton {
     return IconButton(
+      //Note:
       //If set to state again, the future builder run again.
       //That means service will send new request to api then refresh was worked!
       onPressed: () => setState(() {}),
@@ -189,7 +189,8 @@ class _CharactersScreenState extends State<CharactersScreen> {
 
   AppBar get _appBar => AppBar(
         title: Consumer<CharacterManager>(
-          builder: (context, value, child) => AnimatedCrossFade(
+          builder: (context, value, child) {
+            return AnimatedCrossFade(
               firstChild: SearchFieldTextField(
                   onSubmitted: (_) =>
                       value.getCharacterWithFilter(_searchValue),
@@ -202,9 +203,30 @@ class _CharactersScreenState extends State<CharactersScreen> {
               crossFadeState: value.searchVisible
                   ? CrossFadeState.showFirst
                   : CrossFadeState.showSecond,
-              duration: const Duration(milliseconds: searchFieldDuration)),
+              duration: const Duration(milliseconds: searchFieldDuration),
+            );
+          },
         ),
+        actions: _appBarActions,
       );
+
+  List<Widget> get _appBarActions {
+    return <Widget>[
+      Consumer<CharacterManager>(builder: (context, value, child) {
+        return value.searchVisible
+            ? const Text("")
+            : Row(
+                children: [
+                  _aboutMeTextButton,
+                  VerticalDivider(
+                    width: MediaQuery.of(context).size.width / 18,
+                    color: Colors.transparent,
+                  ),
+                ],
+              );
+      }),
+    ];
+  }
 
   Widget get _aboutMeTextButton {
     return TextButton(
@@ -212,7 +234,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
           backgroundColor: Colors.transparent,
           primary: Colors.white70,
           textStyle: GoogleFonts.sansita(fontSize: 12)),
-      child: const Text("About\n me?   "),
+      child: const Text("About me?   "),
       onPressed: () async => await _openAboutMeDialog,
     );
   }
