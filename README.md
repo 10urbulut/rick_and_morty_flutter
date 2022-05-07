@@ -1,16 +1,32 @@
-# rick_and_morty_demo
+## Rick And Morty Guide
 
-A new Flutter project.
 
-## Getting Started
+### This application created with data provider [rickandmortyapi.com](rickandmortyapi.com)
 
-This project is a starting point for a Flutter application.
+### Includes Rick And Morty characters and their episodes. Also you can filter them.
 
-A few resources to get you started if this is your first Flutter project:
+#
+## The screens are below;
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+|                                                                                     -----                                                                                     |                                                                                        -----                                                                                         |
+| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| ![Characters Screen](https://res.cloudinary.com/dlzwvem1a/image/upload/v1651963596/RickAndMortyScreens/Simulator_Screen_Shot_-_iPhone_11_-_2022-05-08_at_01.06.57_zv0bcm.png) | ![Characters Screen Second](https://res.cloudinary.com/dlzwvem1a/image/upload/v1651963596/RickAndMortyScreens/Simulator_Screen_Shot_-_iPhone_11_-_2022-05-08_at_01.08.00_oqwelg.png) |
+
+|                                                                                     -----                                                                                     |                                                                                        -----                                                                                         |
+| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| ![Characters Screen With Filter](https://res.cloudinary.com/dlzwvem1a/image/upload/v1651963598/RickAndMortyScreens/Simulator_Screen_Shot_-_iPhone_11_-_2022-05-08_at_01.07.43_w661np.png) | ![Character Screen](https://res.cloudinary.com/dlzwvem1a/image/upload/v1651963597/RickAndMortyScreens/Simulator_Screen_Shot_-_iPhone_11_-_2022-05-08_at_01.08.08_wchg2z.png) |
+
+
+
+|                                                                                     -----                                                                                     |                                                                                        -----                                                                                         |
+| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| ![Episodes Screen](https://res.cloudinary.com/dlzwvem1a/image/upload/v1651963597/RickAndMortyScreens/Simulator_Screen_Shot_-_iPhone_11_-_2022-05-08_at_01.08.14_mef22g.png) | ![Characters Screen Second](https://res.cloudinary.com/dlzwvem1a/image/upload/v1651963598/RickAndMortyScreens/Simulator_Screen_Shot_-_iPhone_11_-_2022-05-08_at_01.08.17_sqx5a7.png) |
+
+
+|                                                                                     -----                                                                                     |                                                                                        -----                                                                                         |
+| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| ![Episodes Screen With Filter](https://res.cloudinary.com/dlzwvem1a/image/upload/v1651963598/RickAndMortyScreens/Simulator_Screen_Shot_-_iPhone_11_-_2022-05-08_at_01.09.05_kjqgkb.png) | ![About Me Screen](https://res.cloudinary.com/dlzwvem1a/image/upload/v1651963598/RickAndMortyScreens/Simulator_Screen_Shot_-_iPhone_11_-_2022-05-08_at_01.09.30_fl6kxe.png) |
+
+
